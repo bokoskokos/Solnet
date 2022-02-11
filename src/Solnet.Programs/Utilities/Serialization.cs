@@ -222,12 +222,11 @@ namespace Solnet.Programs.Utilities
         {
             byte[] stringBytes = Encoding.UTF8.GetBytes(value);
 
-            if(offset + sizeof(uint) + stringBytes.Length > data.Length)
+            if (offset + sizeof(uint) + stringBytes.Length > data.Length)
                 throw new ArgumentOutOfRangeException(nameof(offset));
 
-            data.WriteU32((uint)stringBytes.Length, 0);
-            data.WriteSpan(stringBytes, sizeof(uint));
-
+            data.WriteU32((uint)stringBytes.Length, offset);
+            data.WriteSpan(stringBytes, offset + sizeof(uint));
             return stringBytes.Length + sizeof(uint);
         }
 
@@ -239,12 +238,12 @@ namespace Solnet.Programs.Utilities
         public static byte[] EncodeBincodeString(string data)
         {
             byte[] stringBytes = Encoding.UTF8.GetBytes(data);
-          
-            byte[] encoded = new byte[stringBytes.Length+sizeof(ulong)];
+
+            byte[] encoded = new byte[stringBytes.Length + sizeof(ulong)];
 
             encoded.WriteU64((ulong)stringBytes.Length, 0);
             encoded.WriteSpan(stringBytes, 8);
-          
+
             return encoded;
         }
         /// <summary>
